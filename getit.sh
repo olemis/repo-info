@@ -83,7 +83,7 @@ get_image_tag() {
         # has tag
         local_image="$(
             echo $1 |
-            cut -d ":" -f
+            cut -d ":" -f1
         )"
         tag="$(
             echo $1 |

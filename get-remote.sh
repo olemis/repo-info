@@ -25,10 +25,6 @@ readonly REGISTRY_ADDRESS="${registry-1.docker.io}"
 # export http_proxy="http://localhost:8118/"
 # export https_proxy="http://localhost:8118/"
 
-# TODO, ask for the usernme:password at runtime for private registries
-# export DOCKER_USERNAME=pavelmc@gmail.com
-# export DOCKER_PASSWORD='---'
-
 # shot to warn about jq, seed & cut absence on the system
 jq --help &> /dev/null
 sed --help &> /dev/null
@@ -67,6 +63,13 @@ main() {
 #               to the image.
 get_token() {
 	local image=$1
+
+	# ask for user:password to access the docker image
+	echo "As the images in the registry are privated ones you need to supply here"
+	echo "A username and password of docker hub in order to get the needed info."
+	echo "" 
+	read -p "User:" DOCKER_USERNAME
+	read -p "Password: " DOCKER_PASSWORD
 
 	curl \
 		--silent \ 

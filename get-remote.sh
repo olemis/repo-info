@@ -43,13 +43,13 @@ main() {
 	image=$1
 	tag=$2
 	#  TODO test this online with a private image
-	# local token=$(get_token $image:$tag)
-	# local digest=$(get_digest $image $tag $token)
-	# get_image_configuration $image $digest
+	local token=$(get_token $image:$tag)
+	local digest=$(get_digest $image $tag $token)
+	get_image_configuration $image $digest
 
 	# local testing 
-	local digest=$(get_digest $image $tag)
-	get_image_configuration $image $digest
+	# local digest=$(get_digest $image $tag)
+	# get_image_configuration $image $digest
 
 	# parse the obtained data
 	parse_data

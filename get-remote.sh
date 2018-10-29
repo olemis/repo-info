@@ -42,6 +42,7 @@ main() {
 
 	image=$1
 	tag=$2
+
 	#  TODO test this online with a private image
 	local token=$(get_token $image:$tag)
 	local digest=$(get_digest $image $tag $token)
@@ -72,8 +73,8 @@ get_token() {
 	read -p "Password: " DOCKER_PASSWORD
 
 	curl \
-		--silent \ 
-		--u "$DOCKER_USERNAME:$DOCKER_PASSWORD" \
+		--silent --anyauth \
+		-u "$DOCKER_USERNAME:$DOCKER_PASSWORD" \
 		"https://auth.docker.io/token?scope=repository:$image:pull&service=registry.docker.io" \
 		| jq -r '.token'
 }

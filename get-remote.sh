@@ -19,8 +19,7 @@ tag=""
 # such address (the address is used in the url itself).
 # If you use the docker hub, this is fine, if you use a private registry you need
 # to modify it (just the fqdn of the registry, without the protocol) 
-# readonly REGISTRY_ADDRESS="${registry-1.docker.io}"
-readonly REGISTRY_ADDRESS="${REGISTRY_ADDRESS:-localhost:5000}"
+readonly REGISTRY_ADDRESS="${registry-1.docker.io}"
 
 # if you are behind a http proxy uncoment and modify as needed
 # export http_proxy="http://localhost:8118/"

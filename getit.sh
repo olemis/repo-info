@@ -25,6 +25,7 @@ tag=""
 remote_image=""
 imagetagmd=""
 registry_URL=""
+ripath=$(pwd)/repo-info
 
 # Entry point of the script.
 # It makes sure that the user supplied the right amount of arguments 
@@ -94,7 +95,12 @@ get_image_tag() {
 
 # Build the README.md for the actual data
 readme() {
-    cat << EOF > README.md
+    # check to see if the repo-info folder is there
+    if [ ! -d $ripath ] ; then
+        mkdir $ripath
+    fi
+
+    cat << EOF > $ripath/README.md
 # $imagetagmd repo-info
 
 This directory contains additional information about the published artifacts of [the $imagetagmd image]($registry_URL).
@@ -116,21 +122,21 @@ EOF
 # Create/update the local structure
 local_data() {
     # check if the local directory is not there to create it
-    if [ ! -d ./local ] ; then
-        mkdir ./local
+    if [ ! -d $ripath/local ] ; then
+        mkdir $ripath/local
     fi
 
-    ./get-local.sh $local_image $tag $registry_URL > ./local/$tag.md
+    ./get-local.sh $local_image $tag $registry_URL > $ripath/local/$tag.md
 }
 
 # Create the remote structure
 remote_data() {
     # check if the remote directory is not there to create it
-    if [ ! -d ./remote ] ; then
-        mkdir ./remote
+    if [ ! -d $ripath/remote ] ; then
+        mkdir $ripath/remote
     fi
 
-    ./get-remote.sh $remote_image $tag > ./remote/$tag.md
+    ./get-remote.sh $remote_image $tag > $ripath/remote/$tag.md
 }
 
 # Run the entry point with the CLI arguments as a list of words as supplied.

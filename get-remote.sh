@@ -3,8 +3,8 @@
 # script to retrieve the remote metadata of a docker repo
 # author Pavel Milanes Costa / pavelmc@github.com
 
-set -eo pipefail
-trap 'echo >&2 Ctrl+C captured, exiting; exit 1' SIGINT
+# set -eo pipefail
+# trap 'echo >&2 Ctrl+C captured, exiting; exit 1' SIGINT
 
 # local temp vars
 repo_manifest=$(mktemp)
@@ -67,9 +67,9 @@ get_token() {
 
 	# ask for user:password to access the docker image
 	echo "As the images in the registry are privated ones you need to supply here"
-	echo "A username and password of docker hub in order to get the needed info."
+	echo "a username and password of docker hub in order to get the needed info."
 	echo "" 
-	read -p "User:" DOCKER_USERNAME
+	read -p "User: " DOCKER_USERNAME
 	read -p "Password: " DOCKER_PASSWORD
 
 	curl \

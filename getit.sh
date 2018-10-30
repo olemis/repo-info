@@ -71,8 +71,6 @@ main() {
     # build the remote data
     remote_data
 
-    exit 0
-
     # build the local data
     local_data
 }
@@ -326,8 +324,14 @@ remote_data() {
         mkdir $ripath/remote
     fi
 
+	# User feedback
+	echo "Getting remote info..." >&2
+
 	# output to file
     get_remote_data > "$ripath/remote/$remote_tag.md"
+
+	# User feedback
+	echo "Done." >&2
 }
 
 # --------------------------------------------------

@@ -1,20 +1,17 @@
 #!/bin/bash
 
-# Set of scripts to create/update the local metadata of 
+# A scripts to create/update the local metadata of 
 # a docker image & repository (aka repo-info metadata)
 # Author Pavel Milanes Costa / pavelmc@github.com
 # 
 # Parameters are as follows
 # 1 - local image name (& optional tag name)
-# 2 - remote image name in the registry (usually the same as the image
-#     but can be different in some cases)
-# 3 - URL of the registry in which the image resides for docs links
+# 2 - [optional] remote image name in the registry 
+#     (usually the same as the image but can be different in some cases)
 # 
-# If the image in the repository is private then you will be asked for
-# a user:password to access that repository.
+# For this script to work the image in the repository must be public
 # 
-# This scripts asumes you are using hub.docker.com 
-# & registry.docker.io services
+# This scripts asumes you are using hub.docker.com services
 
 set -eo pipefail
 trap 'echo >&2 Ctrl+C captured, exiting; exit 1' SIGINT
@@ -23,8 +20,6 @@ trap 'echo >&2 Ctrl+C captured, exiting; exit 1' SIGINT
 local_image=""
 tag=""
 remote_image=""
-imagetagmd=""
-registry_URL=""
 ripath=$(pwd)/repo-info
 
 # Entry point of the script.
@@ -59,19 +54,33 @@ main() {
 
 # Makes sure that we provided (from the cli) enough arguments.
 check_args() {
-	if (($# != 3)); then
+	if (($# != 2)); then
 		echo "Error:
-		Three arguments must be provided - $# provided.
+		At least two arguments must be provided - $# provided.
 
 		Usage:
-		./$0 <local_image[:tag]> <remote_image> <registry_URL>
+		./$0 <local_image[:tag]> [remote_image[:tag]]
 
 		Aborting." >&2
 		exit 1
 	fi
 
-	echo "Ready to process the repo-info for '$1 <> $2'" >&2
+    # detect if we have a third argument
+    if [ ! "$3" == "" ] ; then
+        # local != remote, note it to the user
+        echo "Notice: You provided a different name for the registry image."
+        remote_image=$2
+    else
+        # same name
+        remote_image=$1
+    fi
+
+    # local_image
+    local_image=$1
+
+	echo "Ready to process the repo-info for '$local_image => $remote_image'." >&2
 }
+
 
 # Get image tag, it will take the image name and/or tag and set it
 # on the correct environment vars

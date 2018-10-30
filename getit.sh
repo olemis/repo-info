@@ -69,10 +69,14 @@ main() {
     readme
 
     # build the remote data
-    # remote_data
+    remote_data
 
     # build the local data
     local_data
+
+
+	# all goes well
+	echo "All Done, thank you."
 }
 
 # Makes sure that we provided (from the cli) enough arguments.
@@ -381,7 +385,7 @@ parse_local_data() {
 # build the local data and put it on where it belongs
 get_local_data() {
     # pulling the image if not local
-    docker pull $local_image:$local_tag >&2
+    docker pull $local_image:$local_tag > /dev/null
 
 	# parse the datas
 	parse_local_data $local_image $local_tag
@@ -408,7 +412,3 @@ local_data() {
 
 # Run the entry point with the CLI arguments as a list of words as supplied.
 main "$@"
-
-
-# all goes well
-echo "All Done, thank you."

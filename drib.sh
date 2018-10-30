@@ -1,21 +1,24 @@
 #!/bin/bash
 
-# A scripts to create/update the local metadata of 
-# a docker image & repository (aka repo-info metadata)
-# Author Pavel Milanes Costa / pavelmc@github.com
+# Docker Repo-Info Builder (drib)
+#
+# A scripts to create/update the local metadata of a docker image & repository
+# aka: repo-info metadata folders
+# 
+# Author Pavel Milanes Costa / pavelmc@github.com / stdevPavelmc@github.com
 # 
 # Parameters are as follows
-# 1 - local image name (& optional tag name)
-# 2 - [optional] remote image name in the registry 
+# 1 - local image name (& optional tag name, will use 'latest' if missing)
+# 2 - [optional] remote image name & tag in the registry 
 #     (usually the same as the image but can be different in some cases)
 # 
 # For this script to work the image in the repository must be public
-# We asumed the local tag = remote tag. 
+# Watch out! I use the local tag = remote tag. 
 # 
-# This scripts asumes you are using hub.docker.com services 
+# This scripts assumes you are using hub.docker.com services 
 
-# set -eo pipefail
-# trap 'echo >&2 Ctrl+C captured, exiting; exit 1' SIGINT
+set -eo pipefail
+trap 'echo >&2 Ctrl+C captured, exiting; exit 1' SIGINT
 
 # vars
 local_image=""
@@ -44,10 +47,6 @@ cut --help &> /dev/null
 # Entry point of the script.
 # It makes sure that the user supplied the right amount of arguments 
 # (local_image_name[:tag], registry_image_name, and URL_registy)
-# and then performs the main workflow:
-#       1.      create/updates the README.MD
-#       2.      create/updates the local directory
-#       3.      create/updates the remote directory
 main() {
 	check_args "$@"
 
@@ -55,7 +54,7 @@ main() {
     # - remote_image
     # - local_image
 
-    # detect the use of tags
+    # detect the use of tags and fill the vars with it
     get_image_tag $local_image "local"
 	get_image_tag $remote_image "remote"
     
@@ -63,7 +62,7 @@ main() {
     URI="https://hub.docker.com/r/$remote_image"
 
     # title for the README.md
-    imagetagmd='`'"$local_image:$tag"'`'
+    imagetagmd='`'"$local_image:$local_tag"'`'
 
     # build the README.md
     readme
@@ -87,6 +86,8 @@ check_args() {
 
 		Usage:
 		$0 <local_image[:tag]> [remote_image[:tag]]
+
+        Will assume 'latest' for all not declared tags
 
 		Aborting." >&2
 		exit 1

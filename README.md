@@ -1,6 +1,6 @@
-# Repo-info builder
+# Repo-info builder, pure bash for simplicity.
 
-A simple as possible set of scripts to automate the generation of the docker metadata known as a "repo-info"
+A simple as possible scripts to automate the generation of Docker metadata directory known as "repo-info"
 
 ## How to use it.
 

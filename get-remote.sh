@@ -7,7 +7,6 @@
 # trap 'echo >&2 Ctrl+C captured, exiting; exit 1' SIGINT
 
 # local temp vars
-repo_manifest=$(mktemp)
 repo_config=$(mktemp)
 
 # vars
@@ -45,13 +44,13 @@ main() {
 	image=$1
 	tag=$2
 
-	#  TODO test this online with a private image
-	local token=$(get_token $image $tag)
-	local digest=$(get_digest)
-	get_image_configuration $digest
+	# The hard work goes here
+	token=$(get_token $image $tag)
+	digest=$(get_digest)
+	config=$(get_image_configuration $digest)
 
 	# parse the obtained data
-	parse_data
+	parse_data $digest $config
 }
 
 
@@ -95,6 +94,8 @@ get_token() {
 		echo "Got a Valid Auth-token" >&2
 		local TOKEN="`curl -sLG "$REALM?service=$SERVICE&scope=$SCOPE"`"
 		IFS=\" read _ _ _ TOKEN _ <<<"$TOKEN"
+		# Real output
+		echo $TOKEN
 	else
 		# no valid answer
 		echo "No valid answer, exit" >&2
@@ -103,7 +104,8 @@ get_token() {
 }
 
 
-# Retrieve the digest ffor the repository image
+# Retrieve the digest for the repository image
+# just one argument, the token
 get_digest() {
 	URI="$REGISTRY_ADDRESS/$image/manifests/$tag"
 
@@ -114,9 +116,6 @@ get_digest() {
 		--header "Authorization: Bearer $token" \
 		"$URI"
 	)
-
-	# dump to a file for debug purposes
-	echo $manifest > $repo_manifest
 	
 	# real output
 	echo $manifest | jq -r '.config.digest'
@@ -128,60 +127,59 @@ get_digest() {
 # https://docs.docker.com/registry/spec/api/#pulling-a-layer
 get_image_configuration() {
 	local URI="$REGISTRY_ADDRESS/$image/blobs/$1"
-	echo "URI=$URI"
 
 	local digest_config=$(
-		curl -vLG \
+		curl -sLG \
 		--header "Accept: $ENCODING" \
 		--header "Authorization: Bearer $token" \
 		"$URI"
 	)
 		
 	# dumping the digest config
-	echo $digest_config > $repo_config
-
-	# DEBUG
-	echo $digest_config >&2
+	echo $digest_config
 }
 
 
 # Parse the obtained data, will parse manifest and repo-config and build
-# the $output that will be moved to $tag.md in the remote directory 
+# the $output that will be moved to $tag.md in the remote directory
+# parameters are:
+#	- repo digest
+#	- JSON configuration parameters
 parse_data() {
 	# defaults
+	local repo_manifest=$1
+	local repo_config=$2
 
 	# capturing the data
 	# TODO the digest is from maniest.config.digest | repo_config.container
-	digest=$(
-		cat $repo_manifest |
-		jq -r '.config.digest'
-	)
+	digest=$repo_manifest
 
-	os=$(cat $repo_config |
+	os=$(
+		echo $repo_config |
 		jq -r '.os'
 	)
 
 	arch=$(
-		cat $repo_config |
+		echo $repo_config |
 		jq -r '.architecture'
 	)
 
 	layers=$(
-		cat $repo_config | 
+		echo $repo_config |
 		jq -r '.rootfs.diff_ids' |
 		grep ':' |
 		cut -d '"' -f2
 	)
 
 	ports=$(
-		cat $repo_config |
+		echo $repo_config |
 		jq -r '.container_config.ExposedPorts' |
 		grep ':' |
 		cut -d '"' -f2
 	)
 
 	dockerfile=$(
-		cat $repo_config |
+		echo $repo_config |
 		jq -r '.history | .[] | .created, .created_by' |
 		sed s/"\/bin\/sh -c #(nop) "/""/g |
 		sed s/"$(date +%Y)"/"# $(date +%Y)"/g

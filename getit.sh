@@ -186,10 +186,6 @@ get_token() {
 	# Check for a valid answer
 	if [[ CHALLENGE ]]; then
 		IFS=\" read _ REALM _ SERVICE _ SCOPE _ <<<"$CHALLENGE"
-		echo REALM is $REALM >&2
-		echo SERVICE is $SERVICE >&2
-		echo SCOPE is $SCOPE >&2
-		echo "Got a Valid Auth-token" >&2
 		local TOKEN="`curl -sLG "$REALM?service=$SERVICE&scope=$SCOPE"`"
 		IFS=\" read _ _ _ TOKEN _ <<<"$TOKEN"
 		# Real output

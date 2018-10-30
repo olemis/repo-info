@@ -69,7 +69,7 @@ main() {
     readme
 
     # build the remote data
-    remote_data
+    # remote_data
 
     # build the local data
     local_data
@@ -235,7 +235,7 @@ get_image_configuration() {
 
 # Parse the obtained data
 # the output that will be put in $tag.md in the remote directory
-parse_data() {
+parse_remote_data() {
 	# defaults
 	local image="$1"
 	local tag="$2"
@@ -310,7 +310,7 @@ get_remote_data() {
 	get_image_configuration $remote_image $digest $token
 
 	# parse the obtained data
-	parse_data $remote_image $remote_tag $digest
+	parse_remote_data $remote_image $remote_tag $digest
 
     # erase trash
     rm $repo_config
@@ -334,10 +334,58 @@ remote_data() {
 	echo "Done." >&2
 }
 
-# --------------------------------------------------
+
+# Parse the data from the local image and get it out
+parse_local_data() {
+	local image=$1
+	local tag=$2
+
+    echo '# `'"$image:$tag"'`'
+
+    # get the virtual size of the image
+    size="$(
+	    docker inspect -f '{{ .VirtualSize }}' "$image:$tag" | 
+        awk '{
+            oneKb = 1000;
+            oneMb = 1000 * oneKb;
+            oneGb = 1000 * oneMb;
+            if ($1 >= oneGb) {
+                printf "~ %.2f Gb", $1 / oneGb
+            } else if ($1 >= oneMb) {
+                printf "~ %.2f Mb", $1 / oneMb
+            } else if ($1 >= oneKb) {
+                printf "~ %.2f Kb", $1 / oneKb
+            } else {
+                printf "%d bytes", $1
+            }
+        }'
+    )"
+
+    # build the info and put it out
+    docker inspect -f '
+## Docker Metadata
+
+- Image ID: `{{ .Id }}`
+- Created: `{{ .Created }}`
+- Virtual Size: '"$size"'
+    (total size of all layers on-disk)
+- Arch: `{{ .Os }}`/`{{ .Architecture }}`
+{{ if .Config.Entrypoint }}- Entrypoint: `{{ json .Config.Entrypoint }}`
+{{ end }}{{ if .Config.Cmd }}- Command: `{{ json .Config.Cmd }}`
+{{ end }}- Environment:{{ range .Config.Env }}{{ "\n" }}    - `{{ . }}`{{ end }}' "$image:$tag"
+
+    echo ""
+}
 
 
+# build the local data and put it on where it belongs
+get_local_data() {
+    # pulling the image if not local
+    docker pull $local_image:$local_tag >&2
 
+	# parse the datas
+	parse_local_data $local_image $local_tag
+}
 
 
 # Create/update the local structure
@@ -347,12 +395,20 @@ local_data() {
         mkdir $ripath/local
     fi
 
-    ./get-local.sh $local_image $tag $registry_URL > $ripath/local/$tag.md
+	# User feedback
+	echo "Getting local info..." >&2
+
+	# output to file
+    get_local_data > "$ripath/local/$local_tag.md"
+
+	# User feedback
+	echo "Done." >&2
 }
 
 
 # Run the entry point with the CLI arguments as a list of words as supplied.
 main "$@"
 
+
 # all goes well
-echo "Done."
+echo "All Done, thank you."

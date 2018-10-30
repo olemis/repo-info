@@ -6,13 +6,11 @@
 # set -eo pipefail
 # trap 'echo >&2 Ctrl+C captured, exiting; exit 1' SIGINT
 
-# local temp vars
-repo_config=$(mktemp)
-
 # vars
 image=""
 tag=""
 token=""
+repo_config=$(mktemp)
 
 # Address of the registry that we'll be performing the inspections against.
 # This is necessary as the arguments we supply to the API calls don't include 
@@ -136,7 +134,7 @@ get_image_configuration() {
 	)
 		
 	# dumping the digest config
-	echo $digest_config
+	echo $digest_config > $repo_config
 }
 
 
@@ -148,38 +146,39 @@ get_image_configuration() {
 parse_data() {
 	# defaults
 	local repo_manifest=$1
-	local repo_config=$2
+
+	echo "DIGEST: $repo_manifest"
+	cat $repo_config
 
 	# capturing the data
-	# TODO the digest is from maniest.config.digest | repo_config.container
 	digest=$repo_manifest
 
 	os=$(
-		echo $repo_config |
+		cat $repo_config |
 		jq -r '.os'
 	)
 
 	arch=$(
-		echo $repo_config |
+		cat $repo_config |
 		jq -r '.architecture'
 	)
 
 	layers=$(
-		echo $repo_config |
+		cat $repo_config |
 		jq -r '.rootfs.diff_ids' |
 		grep ':' |
 		cut -d '"' -f2
 	)
 
 	ports=$(
-		echo $repo_config |
+		cat $repo_config |
 		jq -r '.container_config.ExposedPorts' |
 		grep ':' |
 		cut -d '"' -f2
 	)
 
 	dockerfile=$(
-		echo $repo_config |
+		cat $repo_config |
 		jq -r '.history | .[] | .created, .created_by' |
 		sed s/"\/bin\/sh -c #(nop) "/""/g |
 		sed s/"$(date +%Y)"/"# $(date +%Y)"/g
@@ -217,6 +216,5 @@ parse_data() {
 # Run the entry point with the CLI arguments as a list of words as supplied.
 main "$@"
 
-# clean the temp files
-rm $repo_manifest
+# erase trash
 rm $repo_config

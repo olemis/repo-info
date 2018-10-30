@@ -1,48 +1,55 @@
-# Repo-info builder, pure bash for simplicity.
+# Docker Repo-info builder, pure bash for simplicity.
 
 A simple as possible scripts to automate the generation of Docker metadata directory known as "repo-info"
 
+The drib name cames com the initials: "Docker Repo-info builder"
+
 ## How to use it.
 
-Are you using GNU/Linux right? (this is linux only)
+Are you using GNU/Linux right? (this is linux only, sorry.)
 
-Just clone it else where in your HDD, set the exec bit for all the .sh ones, copy all the .sh files to your image description folder (usualy where the Dockerfile resides) and run the getit.sh wiht the following parameters:
-
-* local image name and optionally a tag (will default to :latest)
-* remote image name
-* registry URL for this image
-
-## Example run
+You can follow this simple steps:
+* Clone the repo it in your HDD/project etc.
+* Copy the drib.sh (only his file) to the folder that has your Dockerfile where you want to creat the repo-info folder _(You can do the steps abobe by getting the raw file from github, see how below)_
+* Give exec right to the file:
 
 ```
-pavel@laptop ~$ git clone [clone-URL]
-[...]
-pavel@laptop ~$ cd repo-info
-pavel@laptop ~$ chmod +x *.sh
-pavel@laptop ~$ cp *.sh /path/to/your/destination/folder
-pavel@laptop ~$ cd /path/to/your/destination/folder
-pavel@laptop /path/to/your/destination/folder$ getit.sh busybox library/busybox https://hub.docker.com/library/busybox/
-Ready to process the repo-info for 'busybox <> library/busybox'
-Ready to process (remote) 'busybox:latest'
-Retrieving image digest.
-                IMAGE:  library/busybox
-                TAG:    latest
-                TOKEN: [...token...]
+chmod +x drib.sh
+```
 
-Ready to process (local) 'busybox:latest'
+* Now run it, lets assume that you want to create the metadata folder for the latest 'registry' image (official docker image, so you must prepend the 'library/' to the name) let's see:
+
+```
+pavel@laptop:~/$ ./drib.sh library/registry
+Ready to process the repo-info for 'library/registry => library/registry'.
+Getting remote info...
 Done.
+Getting local info...
+Done.
+All Done, thank you.
+pavel@agatha-lt:~/$
 ```
 
-Now you can check your FS to see the created files.
+Now you can check your folder to see the created files, will have a folder named "repo-info" with the data on it. 
 
-## Gotchas ? 
+Now you can remove the drib.sh file if you like or let it be for future updates.
 
-* What if your repo is a private registry in docker hub?
-* What if your registry is not registry.docker.io?
+## Troubles?
 
-In this cases you will need to auth yourself to it to get it working and or change the registry path and auth path, see the [get-remote.sh](./get-remote.sh) file and uncommment/set the variables to suit your needs.
+If you get in troubles with it or manages to crash it, use the Issues tab.
+
+## Good to Know...
+
+The syntax of the command line is:
+
+```
+./drib.sh <local_image[:local_tag]> [remote_image[:remote-tag]]
+```
+
+As you see the only needed parameter is the local image, the tags are assumes as 'latest' is not specified.
+
+As you can see, you can run it with different local and remote image names and also tags.
 
 ## Author
 
-My name is Pavel Milanes, I'm starting on docker and cloud technologies with this scripts. Be gently with me.
-  
+My name is Pavel Milanes, I'm starting on docker and cloud technologies with this scripts. Be gently on me.

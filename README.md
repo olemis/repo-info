@@ -14,7 +14,7 @@ You can follow this simple steps:
 * Give exec right to the file:
 
 ```sh
-chmod +x drib.sh
+$ chmod +x drib.sh
 ```
 
 * Now run it, lets assume that you want to create the metadata folder for the latest 'registry' image (official docker image, so you must prepend the 'library/' to the name) let's see:
@@ -57,7 +57,7 @@ If you get in troubles with it or manages to crash it, please [search it was alr
 The syntax of the command line is:
 
 ```sh
-./drib.sh <local_image[:local_tag]> [remote_image[:remote-tag]]
+$ ./drib.sh <local_image[:local_tag]> [remote_image[:remote-tag]]
 ```
 
 As you see the only needed parameter is the local image, the tags are assumes as 'latest' is not specified.
@@ -69,13 +69,13 @@ As you can see, you can run it with different local and remote image names and a
 You can fetch & setup the file in just one line with this command: (You need to move to the folder where you want to run it before)
 
 ```sh
-curl -LG https://github.com/simelo/repo-info-tools/raw/master/drib.sh -o drib.sh && chmod +x drib.sh
+$ curl -LG https://github.com/simelo/repo-info-tools/raw/master/drib.sh -o drib.sh && chmod +x drib.sh
 ```
 
 This very is handy for automation tasks, if you need it be completely silent, just run it like this.
 
 ```sh
-curl -sLG https://github.com/simelo/repo-info-tools/raw/master/drib.sh -o drib.sh && chmod +x drib.sh
+$ curl -sLG https://github.com/simelo/repo-info-tools/raw/master/drib.sh -o drib.sh && chmod +x drib.sh
 ```
 
 ### Proxy operation

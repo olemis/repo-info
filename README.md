@@ -55,13 +55,13 @@ As you can see, you can run it with different local and remote image names and a
 You can fetch & setup the file in just one line with this command: (You need to move to the folder where you want to run it before)
 
 ```
-curl -LG https://github.com/stdevPavelmc/repo-info/raw/master/drib.sh -o drib.sh && chmod +x drib.sh
+curl -LG https://github.com/simelo/repo-info-tools/raw/master/drib.sh -o drib.sh && chmod +x drib.sh
 ```
 
 This very is handy for automation tasks, if you need it be completely silent, just run it like this.
 
 ```
-curl -sLG https://github.com/stdevPavelmc/repo-info/raw/master/drib.sh -o drib.sh && chmod +x drib.sh
+curl -sLG https://github.com/simelo/repo-info-tools/raw/master/drib.sh -o drib.sh && chmod +x drib.sh
 ```
 
 ### Proxy operation

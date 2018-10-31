@@ -293,7 +293,8 @@ parse_remote_data() {
 		cat $repo_config |
 		jq -r '.history | .[] | .created, .created_by' |
 		sed s/"\/bin\/sh -c #(nop) "/""/g |
-		sed -E s/"(^20.*-.*Z)"/"# \1"/g
+		sed -E s/"(^20.*-.*Z)"/"# \1"/g |
+		sed s/"    "/"\n  "/g
 	)
 
 	# default output

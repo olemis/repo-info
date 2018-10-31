@@ -50,6 +50,24 @@ As you see the only needed parameter is the local image, the tags are assumes as
 
 As you can see, you can run it with different local and remote image names and also tags.
 
+### Getting the file, fast way
+
+You can fetch & setup the file in just one line with this command: (You need to move to the folder where you want to run it before)
+
+```
+curl -LG https://github.com/stdevPavelmc/repo-info/raw/master/drib.sh -o drib.sh && chmod +x drib.sh
+```
+
+This very is handy for automation tasks, if you need it be completely silent, just run it like this.
+
+```
+curl -sLG https://github.com/stdevPavelmc/repo-info/raw/master/drib.sh -o drib.sh && chmod +x drib.sh
+```
+
+### Proxy operation
+
+It can work over HTTP/HTTPS proxies, just take a peek on the code to modify and uncomment two lines.
+
 ## Author
 
 My name is Pavel Milanes, I'm starting on docker and cloud technologies with this scripts. Be gently on me.

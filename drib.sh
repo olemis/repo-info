@@ -27,7 +27,7 @@ remote_image=""
 remote_tag=""
 ripath=$(pwd)/repo-info
 URI=""
-imagetagmd=""
+image_md=""
 token=""
 repo_config=$(mktemp)
 
@@ -62,7 +62,7 @@ main() {
     URI="https://hub.docker.com/r/$remote_image"
 
     # title for the README.md
-    imagetagmd='`'"$local_image:$local_tag"'`'
+    image_md='`'"$remote_image"'`'
 
     # build the README.md
     readme
@@ -153,9 +153,9 @@ readme() {
     fi
 
     cat << EOF > $ripath/README.md
-# $imagetagmd repo-info
+# $image_md repo-info
 
-This directory contains additional information about the published artifacts of [the $imagetagmd image]($URI).
+This directory contains additional information about the published artifacts of [the $image_md image]($URI).
 
 -   [the \`remote\` directory](remote/):
 

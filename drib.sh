@@ -78,6 +78,7 @@ main() {
 	echo "All Done, thank you."
 }
 
+
 # Makes sure that we provided (from the cli) enough arguments.
 check_args() {
 	if (($# != 1)); then
@@ -144,6 +145,7 @@ get_image_tag() {
 		remote_tag=$tag
 	fi
 }
+
 
 # Build the README.md for the actual data
 readme() {
@@ -257,7 +259,7 @@ parse_remote_data() {
 	# defaults
 	local image="$1"
 	local tag="$2"
-	local digest=$3
+	local digest="$3"
 
 	# verbose
 	echo "Parsing remote data to ./repo-info/remote/$tag.md" >&2
@@ -291,7 +293,7 @@ parse_remote_data() {
 		cat $repo_config |
 		jq -r '.history | .[] | .created, .created_by' |
 		sed s/"\/bin\/sh -c #(nop) "/""/g |
-		sed s/"$(date +%Y)"/"# $(date +%Y)"/g
+		sed -E s/"(^20.*-.*Z)"/"# \1"/g
 	)
 
 	# default output

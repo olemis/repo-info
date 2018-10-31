@@ -23,9 +23,24 @@ chmod +x drib.sh
 $ ./drib.sh library/registry
 Ready to process the repo-info for 'library/registry => library/registry'.
 Getting remote info...
-Done.
+Got token from: https://auth.docker.io/token?service=registry.docker.io&scope=repository:library/registry:pull
+Get remote digest: sha256:2e2f252f3c88679f1207d87d57c07af6819a1a17e22573bcef32804122d2f305
+Got image config
+Parsing remote data to ./repo-info/remote/latest.md
+Done remote.
 Getting local info...
-Done.
+Pulling the image from docker hub
+Using default tag: latest
+latest: Pulling from library/registry
+d6a5679aa3cf: Pull complete 
+ad0eac849f8f: Pull complete 
+2261ba058a15: Pull complete 
+f296fda86f10: Pull complete 
+bcd4a541795b: Pull complete 
+Digest: sha256:5a156ff125e5a12ac7fdec2b90b7e2ae5120fa249cf62248337b6d04abc574c8
+Status: Downloaded newer image for registry:latest
+Parsing local data to ./repo-info/local/latest.md
+Done local.
 All Done, thank you.
 ```
 

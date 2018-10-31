@@ -294,7 +294,7 @@ parse_remote_data() {
 		jq -r '.history | .[] | .created, .created_by' |
 		sed s/"\/bin\/sh -c #(nop) "/""/g |
 		sed -E s/"(^20.*-.*Z)"/"# \1"/g |
-		sed s/"    "/"\n  "/g
+		sed -E s/"[ \t]{2,}"/" "/g
 	)
 
 	# default output

@@ -191,6 +191,10 @@ get_token() {
 		IFS=\" read _ REALM _ SERVICE _ SCOPE _ <<<"$CHALLENGE"
 		local TOKEN="`curl -sLG "$REALM?service=$SERVICE&scope=$SCOPE"`"
 		IFS=\" read _ _ _ TOKEN _ <<<"$TOKEN"
+
+		# verbose output
+		echo "Got token from: $REALM?service=$SERVICE&scope=$SCOPE" >&2
+
 		# Real output
 		echo $TOKEN
 	else
@@ -215,9 +219,15 @@ get_digest() {
 		--header "Authorization: Bearer $token" \
 		"$URI"
 	)
-	
+
+	# parse output
+	digest=$($manifest | jq -r '.config.digest')
+
+	# verbose
+	echo "Get remote digest: $digest" >&2
+
 	# real output
-	echo $manifest | jq -r '.config.digest'
+	echo $digest
 }
 
 
@@ -235,6 +245,9 @@ get_image_configuration() {
 		--header "Authorization: Bearer $token" \
 		"$URI" > $repo_config
 
+	# verbose
+	echo "Got image config" >&2
+
 }
 
 
@@ -245,6 +258,9 @@ parse_remote_data() {
 	local image="$1"
 	local tag="$2"
 	local digest=$3
+
+	# verbose
+	echo "Parsing remote data to ./repo-info/remote/$tag.md" >&2
 
 	# parsing...
 	os=$(
@@ -336,7 +352,7 @@ remote_data() {
     get_remote_data > "$ripath/remote/$remote_tag.md"
 
 	# User feedback
-	echo "Done." >&2
+	echo "Done remote." >&2
 }
 
 
@@ -344,6 +360,9 @@ remote_data() {
 parse_local_data() {
 	local image=$1
 	local tag=$2
+
+	# verbose
+	echo "Parsing local data to ./repo-info/local/$tag.md" >&2
 
     echo '# `'"$image:$tag"'`'
 
@@ -385,10 +404,13 @@ parse_local_data() {
 
 # build the local data and put it on where it belongs
 get_local_data() {
-    # pulling the image if not local
-    docker pull $local_image:$local_tag > /dev/null
+	# verbose
+	echo "Pulling the image from docker hub" >&2
 
-	# parse the datas
+    # pulling the image if not local
+    docker pull $local_image:$local_tag >&2
+
+	# parse the data
 	parse_local_data $local_image $local_tag
 }
 
@@ -407,7 +429,7 @@ local_data() {
     get_local_data > "$ripath/local/$local_tag.md"
 
 	# User feedback
-	echo "Done." >&2
+	echo "Done local." >&2
 }
 
 

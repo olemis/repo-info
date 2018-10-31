@@ -36,7 +36,7 @@ Now you can remove the drib.sh file if you like or let it be for future updates.
 
 ## Troubles?
 
-If you get in troubles with it or manages to crash it, use the Issues tab.
+If you get in troubles with it or manages to crash it, please [search it was already reported](https://github.com/simelo/repo-info-tools/issues) and , if not, then [file an issue](https://github.com/simelo/repo-info-tools/issues/new) .
 
 ## Good to Know...
 

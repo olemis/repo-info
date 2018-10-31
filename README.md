@@ -68,6 +68,12 @@ curl -sLG https://github.com/stdevPavelmc/repo-info/raw/master/drib.sh -o drib.s
 
 It can work over HTTP/HTTPS proxies, just take a peek on the code to modify and uncomment two lines.
 
+### Script feedback
+
+If your images are big and your bandwidth is slow the local part will take a while, it will download the image locally if not already dowloaded.
+
+If this is your case: take a trip to the nearest window to check if the outer world is there. ;-)
+
 ## Author
 
 My name is Pavel Milanes, I'm starting on docker and cloud technologies with this scripts. Be gently on me.

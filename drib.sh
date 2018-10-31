@@ -221,7 +221,7 @@ get_digest() {
 	)
 
 	# parse output
-	digest=$($manifest | jq -r '.config.digest')
+	digest=$(echo $manifest | jq -r '.config.digest')
 
 	# verbose
 	echo "Get remote digest: $digest" >&2

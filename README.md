@@ -13,21 +13,20 @@ You can follow this simple steps:
 * Copy the drib.sh (only his file) to the folder that has your Dockerfile where you want to creat the repo-info folder _(You can do the steps abobe by getting the raw file from github, see how below)_
 * Give exec right to the file:
 
-```
+```sh
 chmod +x drib.sh
 ```
 
 * Now run it, lets assume that you want to create the metadata folder for the latest 'registry' image (official docker image, so you must prepend the 'library/' to the name) let's see:
 
-```
-pavel@laptop:~/$ ./drib.sh library/registry
+```sh
+$ ./drib.sh library/registry
 Ready to process the repo-info for 'library/registry => library/registry'.
 Getting remote info...
 Done.
 Getting local info...
 Done.
 All Done, thank you.
-pavel@agatha-lt:~/$
 ```
 
 Now you can check your folder to see the created files, will have a folder named "repo-info" with the data on it. 
@@ -42,7 +41,7 @@ If you get in troubles with it or manages to crash it, please [search it was alr
 
 The syntax of the command line is:
 
-```
+```sh
 ./drib.sh <local_image[:local_tag]> [remote_image[:remote-tag]]
 ```
 
@@ -54,13 +53,13 @@ As you can see, you can run it with different local and remote image names and a
 
 You can fetch & setup the file in just one line with this command: (You need to move to the folder where you want to run it before)
 
-```
+```sh
 curl -LG https://github.com/simelo/repo-info-tools/raw/master/drib.sh -o drib.sh && chmod +x drib.sh
 ```
 
 This very is handy for automation tasks, if you need it be completely silent, just run it like this.
 
-```
+```sh
 curl -sLG https://github.com/simelo/repo-info-tools/raw/master/drib.sh -o drib.sh && chmod +x drib.sh
 ```
 

@@ -17,8 +17,6 @@
 # 
 # This scripts assumes you are using hub.docker.com services 
 
-set -eo pipefail
-trap 'echo >&2 Ctrl+C captured, exiting; exit 1' SIGINT
 
 # vars
 local_image=""

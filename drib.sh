@@ -113,7 +113,7 @@ Aborting." >&2
 	### Normal operation, one or two arguments
 
     # detect if we have a second argument
-    if [ ! "$2" != "" ] ; then
+    if [ "$2" != "" ] ; then
         # local != remote, note it to the user
         echo "Notice: You provided a different name/tag for the registry" >&2
 

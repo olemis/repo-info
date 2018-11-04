@@ -541,6 +541,8 @@ create_tags_md() {
 		pt='`'"$t"'`'
 		echo "-	[$pt](./remote/$t.md)" >> $file
 	done
+
+	echo "# End of file " >> $file
 }
 
 

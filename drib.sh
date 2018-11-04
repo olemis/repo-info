@@ -538,10 +538,10 @@ create_tags_md() {
 " > $file
 
 	for t in $tags ; do
-		pt='`'"$t"'`'
-		echo "-	[$pt](./remote/$t.md)" >> $file
+		echo "-	['$pt'](./remote/$t.md)" >> $file
 	done
 
+	echo "" >> $file
 	echo "# End of file " >> $file
 }
 

@@ -18,7 +18,7 @@
 # This scripts assumes you are using hub.docker.com services 
 
 
-# vars
+# initalize vars
 local_image=""
 local_tag=""
 remote_image=""
@@ -28,6 +28,8 @@ URI=""
 image_md=""
 token=""
 repo_config=$(mktemp)
+tags=""
+tagsmode=""
 
 # Global constants
 readonly REGISTRY_ADDRESS="https://registry.hub.docker.com/v2" 
@@ -42,25 +44,11 @@ jq --help &> /dev/null
 sed --help &> /dev/null
 cut --help &> /dev/null
 
-# Entry point of the script.
-# It makes sure that the user supplied the right amount of arguments 
+# Main function of the script.
 # (local_image_name[:tag], registry_image_name, and URL_registy)
 main() {
-	check_args "$@"
-
-    # at this point we have loaded this vars on the environment
-    # - remote_image
-    # - local_image
-
-    # detect the use of tags and fill the vars with it
-    get_image_tag $local_image "local"
-	get_image_tag $remote_image "remote"
-    
     # setting the remote address of the repository
     URI="https://hub.docker.com/r/$remote_image"
-
-    # title for the README.md
-    image_md='`'"$remote_image"'`'
 
     # build the README.md
     readme
@@ -104,18 +92,46 @@ Aborting." >&2
 		exit 1
 	fi
 
+	##### Arguments parsing to know what use case ######
+
+	### All tags for a repo:
+	# $0 -a <repository>
+	if [ "$1" == "-a" ] ; then
+		# detect tag if passed & strip it from the repository name
+		get_image_tag $2 "local"
+
+		# flag to switch
+		tagsmode="true"
+
+		# title for the tags/readme.md
+		image_md='`'"$local_image"'`'
+
+		#  no more work to do here
+		return
+	fi
+
+	### Normal operation, one or two arguments
+
     # detect if we have a second argument
-    if [ ! "$2" == "" ] ; then
+    if [ ! "$2" != "" ] ; then
         # local != remote, note it to the user
-        echo "Notice: You provided a different name for the registry image."
+        echo "Notice: You provided a different name/tag for the registry" >&2
+
+		# set images var
+		local_image=$1
         remote_image=$2
     else
         # same name
+		local_image=$1
         remote_image=$1
     fi
 
-    # local_image
-    local_image=$1
+	# detect the use of tags and fill the vars with it
+    get_image_tag $local_image "local"
+	get_image_tag $remote_image "remote"
+
+	# title for the README.md
+    image_md='`'"$remote_image"'`'
 
 	echo "Ready to process the repo-info for '$local_image => $remote_image'." >&2
 }
@@ -446,5 +462,92 @@ local_data() {
 }
 
 
-# Run the entry point with the CLI arguments as a list of words as supplied.
-main "$@"
+# Get all tags from a repository and return it as a string
+get_all_tags() {
+	local repository=$1
+
+	# get the tags from docker hub
+	# json_tags=$(
+	# 	curl -sL "https://registry.hub.docker.com/v2/repositories/$repository/tags/" |
+		jq '.results[].name' |
+		tr "\n" " " |
+		tr -d '"'
+	)
+
+	# return them
+	echo $json_tags
+}
+
+
+# create file tags.md listing all tags found.
+create_tags_md() {
+	local tags=$1
+	local file="tags_listing.md"
+
+	echo "
+# Tag listing for the repository $image_md
+
+## This are the tags we keep track:
+" > $file
+
+	for t in $(cat list) ; do
+		pt='`'"$t"'`'
+		echo "-	[$pt](./remote/$t.md)" >> $file
+	done
+}
+
+
+# Detect and process all tags for a given repository
+# It will create a file named tags.md in the base folder
+process_all_tags_for() {
+	local image="$1"
+
+	# get all tags
+	tags=$(get_all_tags $image)
+
+	# Create the file if one or more tags are found
+	if [ "$tags" != "" ] ; then
+		echo "Found the following tags:" >&2
+		echo "TAGS: $tags" >&2
+
+		# Output a tags listing file
+		create_tags_md $tags
+
+		# setting default vars
+		local_image="$image"
+		remote_image="$image"
+
+		# process
+		for t in $tags ; do
+			echo "Processing tag: $t"
+
+			# set tags variation
+			remote_tag=$t
+			local_tag=$t
+
+			# doit
+			main
+		done
+	else
+		# warn and terminate
+		echo "Sorry no tags found for your passed repository, please check." >&2
+
+		# teminate
+		exit 1
+	fi
+
+
+}
+
+# Check the passed arguments
+check_args "$@"
+
+# Switch on the script case to run desired actions
+if [ "$tagsmode" == "true" ] ; then
+	# local_image has the repository name (tag stripped)
+	# call the procedure to get and process all tags
+	process_all_tags_for $local_image
+else
+	# normal operation with just one repository/image
+	main
+fi

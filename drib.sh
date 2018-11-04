@@ -79,9 +79,11 @@ main() {
 
 # Makes sure that we provided (from the cli) enough arguments.
 check_args() {
-	if (($# != 1)); then
+	if [ "$#" == "0" ] ; then
 		echo "
-Error: At least two arguments must be provided - $# provided.
+Error: One or Two arguments must be provided - $# provided.
+
+Usage follows.
 
 Simple use case:
   $0 <local_image[:tag]> [remote_image[:tag]]
@@ -102,8 +104,8 @@ Aborting." >&2
 		exit 1
 	fi
 
-    # detect if we have a third argument
-    if [ ! "$3" == "" ] ; then
+    # detect if we have a second argument
+    if [ ! "$2" == "" ] ; then
         # local != remote, note it to the user
         echo "Notice: You provided a different name for the registry image."
         remote_image=$2

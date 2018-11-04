@@ -215,16 +215,42 @@ get_token() {
 
 	# first failed try, to capture real, dervice & scope
 	local MANIFEST="`curl -skLG -o /dev/null -D- $URI`"
+
+	# validation
+	if [ "$MANIFEST" == "" ] ; then
+		echo "Can't get the token information, please check your connectivity" >&2
+		exit 1
+	fi
+
 	local CHALLENGE="`grep "Www-Authenticate" <<<"$MANIFEST"`"
+
+	# validation
+	if [ "$CHALLENGE" == "" ] ; then
+		echo "Token info is missing parameters, please check your connectivity" >&2
+		exit 1
+	fi
 
 	# Check for a valid answer
 	if [[ CHALLENGE ]]; then
 		IFS=\" read _ REALM _ SERVICE _ SCOPE _ <<<"$CHALLENGE"
+
+		# validation
+		if [ "$REALM" == "" -o "$SERVICE" == "" -o "$SCOPE" == "" ] ; then
+			echo "Some parameter of the token auth routine is missing, network problems?" >&2
+			exit 1
+		fi
+
 		local TOKEN="`curl -sLG "$REALM?service=$SERVICE&scope=$SCOPE"`"
 		IFS=\" read _ _ _ TOKEN _ <<<"$TOKEN"
 
+		# validation
+		if [ "$TOKEN" == ""] ; then
+			echo "There is no token on the answer, network problems?" >&2
+			exit 1
+		fi
+
 		# verbose output
-		echo "Got token from: $REALM?service=$SERVICE&scope=$SCOPE" >&2
+		echo "Got token from: $REALM" >&2
 
 		# Real output
 		echo $TOKEN
@@ -251,8 +277,20 @@ get_digest() {
 		"$URI"
 	)
 
+	# validation
+	if [ "$?" != "0" ] ; then
+		echo "Can't get the JSON digest for this image, check the network?" >&2
+		exit 1
+	fi
+
 	# parse output
 	digest=$(echo $manifest | jq -r '.config.digest')
+
+	# validation
+	if [ "$digest" == "" ] ; then
+		echo "Oops! no valid digest for this image, did you write it right?" >&2
+		exit 1
+	fi
 
 	# verbose
 	echo "Get remote digest: $digest" >&2
@@ -275,6 +313,12 @@ get_image_configuration() {
 	curl -sLG --header "Accept: $ENCODING" \
 		--header "Authorization: Bearer $token" \
 		"$URI" > $repo_config
+
+	# validation
+	if [ ! -s "$repo_config" ] ; then
+		echo "Can't get image config from registy, check the network?" >&2
+		exit 1
+	fi
 
 	# verbose
 	echo "Got image config" >&2

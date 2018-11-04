@@ -23,7 +23,7 @@ local_image=""
 local_tag=""
 remote_image=""
 remote_tag=""
-ripath=$(pwd)/repo-info
+ripath=$(pwd)
 URI=""
 image_md=""
 token=""
@@ -132,6 +132,9 @@ Aborting." >&2
 
 	# title for the README.md
     image_md='`'"$remote_image"'`'
+
+	# local work, info must be located on a repo-info folder
+	ripath="$ripath/repo-info"
 
 	echo "Ready to process the repo-info for '$local_image => $remote_image'." >&2
 }
@@ -288,7 +291,7 @@ parse_remote_data() {
 	local digest="$3"
 
 	# verbose
-	echo "Parsing remote data to ./repo-info/remote/$tag.md" >&2
+	echo "Parsing remote data to $ripath/remote/$tag.md" >&2
 
 	# parsing...
 	os=$(
@@ -391,7 +394,7 @@ parse_local_data() {
 	local tag=$2
 
 	# verbose
-	echo "Parsing local data to ./repo-info/local/$tag.md" >&2
+	echo "Parsing local data to $ripath/local/$tag.md" >&2
 
     echo '# `'"$image:$tag"'`'
 

@@ -528,7 +528,7 @@ get_all_tags() {
 
 # create file tags.md listing all tags found.
 create_tags_md() {
-	local tags=$1
+	local tags="$1"
 	local file="tags_listing.md"
 
 	echo "
@@ -537,7 +537,7 @@ create_tags_md() {
 ## This are the tags we keep track:
 " > $file
 
-	for t in $(echo $tags) ; do
+	for t in $tags ; do
 		pt='`'"$t"'`'
 		echo "-	[$pt](./remote/$t.md)" >> $file
 	done

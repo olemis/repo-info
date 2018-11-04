@@ -244,7 +244,7 @@ get_token() {
 		IFS=\" read _ _ _ TOKEN _ <<<"$TOKEN"
 
 		# validation
-		if [ "$TOKEN" == ""] ; then
+		if [ ! "$TOKEN" ] ; then
 			echo "There is no token on the answer, network problems?" >&2
 			exit 1
 		fi

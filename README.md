@@ -17,11 +17,25 @@ You can follow this simple steps:
 $ chmod +x drib.sh
 ```
 
-* Now run it, lets assume that you want to create the metadata folder for the latest 'registry' image (official docker image, so you must prepend the 'library/' to the name) let's see:
+* Now run it, lets assume that you want to create the metadata folder for the skycoin/skycoindev-cli with the tag develop let's see:
 
 ```sh
-$ ./drib.sh library/registry
-[TODO Update with a fresh output]
+$ ./drib.sh skycoin/skycoindev-cli:develop
+Ready to process the repo-info for 'skycoin/skycoindev-cli => skycoin/skycoindev-cli'.
+Getting remote info...
+Got token from: https://auth.docker.io/token
+Get remote digest: sha256:f078698f17c9fb74151b5e63aa6a959505f27fba1af95378ce760c91f0d7ea2a
+Got image config
+Parsing remote data to /home/cat/github/repo-info/remote/develop.md
+Done remote.
+Getting local info...
+Pulling the image from docker hub
+develop: Pulling from skycoin/skycoindev-cli
+Digest: sha256:dc32d9062d9bee86d3d9ad5230ec6022068794af8029c926595892904900b02f
+Status: Image is up to date for skycoin/skycoindev-cli:develop
+Parsing local data to /home/cat/github/repo-info/local/develop.md
+Done local.
+All Done, thank you.
 ```
 
 Now you can check your folder to see the created files, will have a folder named "repo-info" with the data on it. 
@@ -34,11 +48,42 @@ Imagine you are the maintainer of a group of docker images for a project in a pu
 
 How wonderfull will be if you can make the repo-info for all tags in the repository for a given image name?
 
-Wonder no more, run it with two special arguments '-a' and your image name:
+Wonder no more, run it with two special arguments '-a' and your image name (in this case skycoin/skycoindev-cli)
 
 ```sh
-$ ./drib.sh -a library/registry
-[TODO, real listing of work done]
+$ ./drib.sh -a skycoin/skycoindev-cli
+Found the following tags:
+TAGS: develop dind
+Processing tag: develop
+Getting remote info...
+Got token from: https://auth.docker.io/token
+Get remote digest: sha256:f078698f17c9fb74151b5e63aa6a959505f27fba1af95378ce760c91f0d7ea2a
+Got image config
+Parsing remote data to /home/cat/github/remote/develop.md
+Done remote.
+Getting local info...
+Pulling the image from docker hub
+develop: Pulling from skycoin/skycoindev-cli
+Digest: sha256:dc32d9062d9bee86d3d9ad5230ec6022068794af8029c926595892904900b02f
+Status: Image is up to date for skycoin/skycoindev-cli:develop
+Parsing local data to /home/cat/github/local/develop.md
+Done local.
+All Done, thank you.
+Processing tag: dind
+Getting remote info...
+Got token from: https://auth.docker.io/token
+Get remote digest: sha256:059f9228a6dfe11c08e475b383cd851edbbb2d11ee766cc4067e329f3b6ce5c2
+Got image config
+Parsing remote data to /home/cat/github/remote/dind.md
+Done remote.
+Getting local info...
+Pulling the image from docker hub
+dind: Pulling from skycoin/skycoindev-cli
+Digest: sha256:0fe7e94109f07dbb6d2840e13bb660be50cef87b11999c47354ec2c36945423c
+Status: Image is up to date for skycoin/skycoindev-cli:dind
+Parsing local data to /home/cat/github/local/dind.md
+Done local.
+All Done, thank you.
 ```
 
 ## What if you maintain a group of images for a project, each one with a few different tags?

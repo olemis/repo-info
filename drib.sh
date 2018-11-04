@@ -80,15 +80,25 @@ main() {
 # Makes sure that we provided (from the cli) enough arguments.
 check_args() {
 	if (($# != 1)); then
-		echo "Error:
-		At least two arguments must be provided - $# provided.
+		echo "
+Error: At least two arguments must be provided - $# provided.
 
-		Usage:
-		$0 <local_image[:tag]> [remote_image[:tag]]
+Simple use case:
+  $0 <local_image[:tag]> [remote_image[:tag]]
 
-        Will assume 'latest' for all not declared tags
+  Where 'local_image' is the only required argument
+  * Will assume all tags as 'latest' if not mentioned
+  * Will assume remote image in registry has the same name and tag
+    as the local image, or you can pass your own.
 
-		Aborting." >&2
+Search use case:
+  $0 -a <repository>
+		
+  Where 'repository' is the name of a repository with at least one image
+  to process, in this case the script will search for all tags on that
+  repository and will process them all.
+
+Aborting." >&2
 		exit 1
 	fi
 

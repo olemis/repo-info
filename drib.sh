@@ -133,9 +133,6 @@ Aborting." >&2
 	# title for the README.md
     image_md='`'"$remote_image"'`'
 
-	# local work, info must be located on a repo-info folder
-	ripath="$ripath/repo-info"
-
 	echo "Ready to process the repo-info for '$local_image => $remote_image'." >&2
 }
 
@@ -178,11 +175,7 @@ get_image_tag() {
 
 # Build the README.md for the actual data
 readme() {
-    # check to see if the repo-info folder is there
-    if [ ! -d $ripath ] ; then
-        mkdir $ripath
-    fi
-
+	# Create the README.md
     cat << EOF > $ripath/README.md
 # $image_md repo-info
 
@@ -335,7 +328,7 @@ parse_remote_data() {
 	local digest="$3"
 
 	# verbose
-	echo "Parsing remote data to $ripath/remote/$tag.md" >&2
+	echo "Parsing remote data to ./remote/$tag.md" >&2
 
 	# parsing...
 	os=$(
@@ -438,7 +431,7 @@ parse_local_data() {
 	local tag=$2
 
 	# verbose
-	echo "Parsing local data to $ripath/local/$tag.md" >&2
+	echo "Parsing local data to ./local/$tag.md" >&2
 
     echo '# `'"$image:$tag"'`'
 

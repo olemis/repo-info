@@ -9,9 +9,9 @@ The drib name cames com the initials: "Docker repo-info builder"
 Are you using GNU/Linux right? (this is linux only, sorry.)
 
 You can follow this simple steps:
-* Clone the repo it in your HDD/project etc.
-* Copy the drib.sh (only this file) to the folder that has your Dockerfile where you want to creat the repo-info folder _(You can do the steps abobe by getting the raw file from github, see how below)_
-* Give exec right to the file:
+* Create the repo-info folder in the place you need it.
+* Copy the drib.sh (only this file) to the repo-info folder you just created._(You can do this step by getting the raw file from github, see how below)_
+* Change to the created folder and give exec right to the file:
 
 ```sh
 $ chmod +x drib.sh
@@ -38,9 +38,7 @@ Done local.
 All Done, thank you.
 ```
 
-Now you can check your folder to see the created files, will have a folder named "repo-info" with the data on it. 
-
-Now you can remove the drib.sh file if you like or let it be for future updates.
+Now you can check your fs to see the created files/folders, you will have a README.md and two folders named local & remote. Now you can remove the drib.sh file if you like or let it be for future updates.
 
 ## Search & process all tags for a given image.
 
@@ -48,7 +46,7 @@ Imagine you are the maintainer of a group of docker images for a project in a pu
 
 How wonderfull will be if you can make the repo-info for all tags in the repository for a given image name?
 
-Wonder no more, run it with two special arguments '-a' and your image name (in this case skycoin/skycoindev-cli)
+Wonder no more: move to your desired folder  run it with two special arguments '-a' and your image name (in this case skycoin/skycoindev-cli)
 
 ```sh
 $ ./drib.sh -a skycoin/skycoindev-cli

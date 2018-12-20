@@ -535,7 +535,6 @@ create_tags_md() {
 	done
 
 	echo "" >> $file
-	echo "# End of file " >> $file
 }
 
 

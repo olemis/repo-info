@@ -527,7 +527,7 @@ create_tags_md() {
 	echo "
 # Tag listing for the repository $image_md
 
-## This are the tags we keep track:
+## This are the tags we keep track of:
 " > $file
 
 	for t in $tags ; do
@@ -553,7 +553,7 @@ process_all_tags_for() {
 		echo "TAGS: $tags" >&2
 
 		# Output a tags listing file
-		create_tags_md $tags
+		create_tags_md "$tags"
 
 		# setting default vars
 		local_image="$image"

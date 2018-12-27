@@ -510,10 +510,9 @@ get_all_tags() {
 
 	# get the tags from docker hub
 	json_tags=$(
-		curl -sL "https://registry.hub.docker.com/v2/repositories/$repository/tags/" |
-		jq '.results[].name' |
-		tr "\n" " " |
-		tr -d '"'
+		curl -sL "https://registry.hub.docker.com/v1/repositories/$repository/tags" |
+		jq -r '.[].name' |
+		tr "\n" " "
 	)
 
 	# return them

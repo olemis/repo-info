@@ -30,6 +30,7 @@ token=""
 repo_config=$(mktemp)
 tags=""
 tagsmode=""
+regex=""
 
 # Global constants
 readonly REGISTRY_ADDRESS="https://registry.hub.docker.com/v2" 
@@ -105,6 +106,11 @@ Aborting." >&2
 
 		# title for the tags/readme.md
 		image_md='`'"$local_image"'`'
+
+		# detect if we have some filtering on the command line
+		if [ $# -eq 4 -a "$3" = "-f" ]; then 
+			regex="$4"
+		fi
 
 		#  no more work to do here
 		return
@@ -543,9 +549,19 @@ create_tags_md() {
 # It will create a file named tags.md in the base folder
 process_all_tags_for() {
 	local image="$1"
+	local regex="$2"
 
 	# get all tags
-	tags=$(get_all_tags $image)
+	local alltags=$(get_all_tags $image)
+
+	# filter (if nedded) for desired tags
+	if [ -n "$regex" ] ; then
+		# do filter
+		tags=`echo "$alltags" | xargs | tr " " "\n" | grep -E "$regex" | xargs`
+		echo "Tags list filtered by your command"
+	else
+		tags=$alltags
+	fi
 
 	# Create the file if one or more tags are found
 	if [ "$tags" != "" ] ; then
@@ -588,7 +604,7 @@ check_args "$@"
 if [ "$tagsmode" == "true" ] ; then
 	# local_image has the repository name (tag stripped)
 	# call the procedure to get and process all tags
-	process_all_tags_for $local_image
+	process_all_tags_for $local_image $regex
 else
 	# normal operation with just one repository/image
 	main

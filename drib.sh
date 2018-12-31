@@ -557,7 +557,7 @@ process_all_tags_for() {
 	# filter (if nedded) for desired tags
 	if [ -n "$regex" ] ; then
 		# do filter
-		tags=`echo $alltags | grep -E "$regex"`
+		tags=`echo "$alltags" | xargs | tr " " "\n" | grep -E "$regex" | xargs`
 		echo "Tags list filtered by your command"
 	else
 		tags=$alltags
